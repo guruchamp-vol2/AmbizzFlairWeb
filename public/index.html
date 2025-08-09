@@ -6,7 +6,7 @@
   <title>Ambizz Flair • Final Price Calculator</title>
   <link rel="stylesheet" href="/style.css" />
   <link rel="icon" href="/logo.svg" type="image/svg+xml">
-  <meta name="description" content="Ambizz Flair — clothing & couture label. Quick final price calculator for percent or flat discounts." />
+  <meta name="description" content="Ambizz Flair — final price calculator for percent or flat discounts." />
 </head>
 <body>
   <main class="card">
@@ -61,41 +61,7 @@ Body: { "price": 100, "discount": 20, "mode": "percent" }</code></pre>
     </footer>
   </main>
 
-  <script>
-    const fmt = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
-
-    const form = document.getElementById("calc-form");
-    const priceEl = document.getElementById("price");
-    const discountEl = document.getElementById("discount");
-    const modeEl = document.getElementById("mode");
-    const resultEl = document.getElementById("result");
-    const discountAmountEl = document.getElementById("discountAmount");
-    const finalPriceEl = document.getElementById("finalPrice");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const price = Number(priceEl.value);
-      const discount = Number(discountEl.value);
-      const mode = modeEl.value;
-
-      const res = await fetch("/api/final-price", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ price, discount, mode })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.error || "Error");
-        return;
-      }
-
-      discountAmountEl.textContent = fmt.format(data.output.discountAmount);
-      finalPriceEl.textContent = fmt.format(data.output.finalPrice);
-      resultEl.classList.remove("hidden");
-      resultEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-  </script>
+  <!-- External script (CSP-safe) -->
+  <script src="/app.js" defer></script>
 </body>
 </html>
