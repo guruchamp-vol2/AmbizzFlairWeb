@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ambizz Flair • Final Price Calculator</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <meta name="description" content="Ambizz Flair — clothing & couture label. Quick final price calculator for percent or flat discounts." />
+</head>
+<body>
+  <main class="card">
+    <header class="brand">
+      <img src="/logo.svg" alt="Ambizz Flair logo" class="logo" />
+      <div>
+        <h1>Ambizz Flair</h1>
+        <p class="subtitle">Final Price Calculator</p>
+      </div>
+    </header>
+
+    <form id="calc-form" autocomplete="off">
+      <label>
+        Price
+        <input type="number" step="0.01" min="0" id="price" placeholder="e.g. 249.99" required />
+      </label>
+
+      <label>
+        Discount
+        <input type="number" step="0.01" min="0" id="discount" placeholder="e.g. 15" required />
+      </label>
+
+      <label>
+        Discount Type
+        <select id="mode">
+          <option value="percent" selected>Percent (%)</option>
+          <option value="flat">Flat ($)</option>
+        </select>
+      </label>
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    <div id="result" class="result hidden" role="status" aria-live="polite">
+      <h2>Result</h2>
+      <div class="row"><span>Discount Amount:</span> <strong id="discountAmount">$0.00</strong></div>
+      <div class="row total"><span>Final Price:</span> <strong id="finalPrice">$0.00</strong></div>
+    </div>
+
+    <details class="api">
+      <summary>API</summary>
+      <pre><code>POST /api/final-price
+Body: { "price": 100, "discount": 20, "mode": "percent" }</code></pre>
+    </details>
+
+    <footer class="foot">
+      <span>© Ambizz Flair</span>
+      <nav>
+        <a href="https://www.facebook.com/ambizzflair" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://www.instagram.com/ambizzflair" target="_blank" rel="noopener">Instagram</a>
+      </nav>
+    </footer>
+  </main>
+
+  <script>
+    const fmt = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
+
+    const form = document.getElementById("calc-form");
+    const priceEl = document.getElementById("price");
+    const discountEl = document.getElementById("discount");
+    const modeEl = document.getElementById("mode");
+    const resultEl = document.getElementById("result");
+    const discountAmountEl = document.getElementById("discountAmount");
+    const finalPriceEl = document.getElementById("finalPrice");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const price = Number(priceEl.value);
+      const discount = Number(discountEl.value);
+      const mode = modeEl.value;
+
+      const res = await fetch("/api/final-price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ price, discount, mode })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Error");
+        return;
+      }
+
+      discountAmountEl.textContent = fmt.format(data.output.discountAmount);
+      finalPriceEl.textContent = fmt.format(data.output.finalPrice);
+      resultEl.classList.remove("hidden");
+      resultEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  </script>
+</body>
+</html>
