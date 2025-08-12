@@ -1,10 +1,12 @@
 const fmt = new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" });
+const pct = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 const form = document.getElementById("calc-form");
 const priceEl = document.getElementById("price");
 const discountEl = document.getElementById("discount");
 const modeEl = document.getElementById("mode");
 const resultEl = document.getElementById("result");
 const discountAmountEl = document.getElementById("discountAmount");
+const discountPercentEl = document.getElementById("discountPercent");
 const finalPriceEl = document.getElementById("finalPrice");
 
 form.addEventListener("submit", async (e) => {
@@ -21,26 +23,18 @@ form.addEventListener("submit", async (e) => {
     });
 
     let data;
-    try {
-      data = await res.json();
-    } catch (err) {
-      console.error("Invalid JSON response", err);
-      alert("Server returned invalid response.");
-      return;
-    }
+    try { data = await res.json(); }
+    catch { alert("Server returned invalid JSON."); return; }
 
-    if (!res.ok) {
-      console.error("API error:", data);
-      alert(data.error || "Request failed");
-      return;
-    }
+    if (!res.ok) { alert(data.error || "Request failed"); return; }
 
     discountAmountEl.textContent = fmt.format(data.output.discountAmount);
+    discountPercentEl.textContent = pct.format(data.output.discountPercent) + "%";
     finalPriceEl.textContent = fmt.format(data.output.finalPrice);
     resultEl.classList.remove("hidden");
     resultEl.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (err) {
     console.error("Request failed:", err);
-    alert("Could not reach the server. Is it running?");
+    alert("Could not reach the server.");
   }
 });

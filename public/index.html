@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ambizz Flair • Final Price Calculator</title>
   <link rel="stylesheet" href="/style.css" />
-  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="/logo.jpg" type="image/jpeg">
   <meta name="description" content="Ambizz Flair — final price calculator for percent or flat discounts." />
 </head>
 <body>
   <main class="card">
     <header class="brand">
-      <img src="/logo.svg" alt="Ambizz Flair logo" class="logo" />
+      <img src="/logo.jpg" alt="Ambizz Flair logo" class="logo" />
       <div>
         <h1>Ambizz Flair</h1>
         <p class="subtitle">Final Price Calculator</p>
@@ -43,13 +43,14 @@
     <div id="result" class="result hidden" role="status" aria-live="polite">
       <h2>Result</h2>
       <div class="row"><span>Discount Amount:</span> <strong id="discountAmount">$0.00</strong></div>
+      <div class="row"><span>Discount Percent:</span> <strong id="discountPercent">0%</strong></div>
       <div class="row total"><span>Final Price:</span> <strong id="finalPrice">$0.00</strong></div>
     </div>
 
     <details class="api">
       <summary>API</summary>
       <pre><code>POST /api/final-price
-Body: { "price": 100, "discount": 20, "mode": "percent" }</code></pre>
+Body: { "price": 100, "discount": 20, "mode": "percent" | "flat" }</code></pre>
     </details>
 
     <footer class="foot">
@@ -61,7 +62,6 @@ Body: { "price": 100, "discount": 20, "mode": "percent" }</code></pre>
     </footer>
   </main>
 
-  <!-- External script (CSP-safe) -->
   <script src="/app.js" defer></script>
 </body>
 </html>

@@ -10,19 +10,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Helmet WITHOUT CSP (so we rely on platform's CSP); external scripts are allowed from 'self'
-app.use(helmet({
-  contentSecurityPolicy: false
-}));
+// Disable Helmet's CSP to avoid blocking our external script tag; rely on platform CSP
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Request logger (helps debugging)
-app.use((req, _res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -52,13 +44,19 @@ app.post("/api/final-price", (req, res) => {
 
     const discountAmount = mode === "percent" ? (price * discount) / 100 : discount;
     const finalPrice = Math.max(0, price - discountAmount);
+    const discountPercent = price > 0 ? (discountAmount / price) * 100 : 0;
+
     const round2 = (n) => Math.round(n * 100) / 100;
 
     return res.json({
       currency: "USD",
       mode,
       input: { price: round2(price), discount: round2(discount) },
-      output: { discountAmount: round2(discountAmount), finalPrice: round2(finalPrice) }
+      output: {
+        discountAmount: round2(discountAmount),
+        finalPrice: round2(finalPrice),
+        discountPercent: Math.round(discountPercent * 100) / 100
+      }
     });
   } catch (e) {
     console.error(e);

@@ -1,7 +1,7 @@
 {
   "name": "ambizz-flair-pricer",
-  "version": "1.0.2",
-  "description": "Ambizz Flair - Final price calculator (web service + UI, CSP-safe)",
+  "version": "1.0.3",
+  "description": "Ambizz Flair - Final price calculator (web service + UI, CSP-safe, discount percent)",
   "main": "server.js",
   "type": "module",
   "scripts": {
